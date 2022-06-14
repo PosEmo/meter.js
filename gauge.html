@@ -1,0 +1,90 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="./dist/loading-bar.css"/>
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="https://cdn.rawgit.com/tiaanduplessis/wenk/master/dist/wenk.css">
+  </head>
+  <body>
+    <div class="gauges">
+      <span data-wenk="The PosEmo sygnet shows activity, the interest is represented on speedometer." data-wenk-pos="bottom" data-wenk-length="large" class="wenk-align--center centerGaugeTooltip">
+        <div 
+          id="gaugeInterest"
+          class="ldbar label-center gaugeInterest"
+          data-type="stroke"
+          data-stroke-trail-width="15"
+          data-stroke-width="15"
+          data-stroke="url(#p)"
+          data-path="M40 150A80 80 0 1 1 140 150"
+          data-value="0"
+        >
+          <div 
+            id="gaugeActivity"
+            class="ldBar centerGaugeInCircle gaugeActivity"
+            data-type="fill"
+            data-img="assets/Sygnet_wersja_kolor.png"
+            data-value="0"
+            data-duration="0.1"
+            data-max="100"
+            data-min="0"
+          ></div>
+        </div>
+      </span>
+      <svg class="gaugeMask">
+        <mask id="mask" class="mask">
+          <path d="M40 150A80 80 0 1 1 140 150"
+            class="gaugeMask"
+            stroke-width="15"
+            stroke="#fff"
+            stroke-dasharray="3 6"/>
+        </mask>
+        <pattern id="p" width="200" height="200" patternUnits="userSpaceOnUse">
+          <image href="assets/gradientGauge.png"
+            width="200" height="200"/>
+        </pattern>
+      </svg>
+    </div>
+
+    <script type="text/javascript" src="./dist/loading-bar.js"></script>
+    <script> 
+    //Gauges
+    const gaugeInterest  = new ldBar("#gaugeInterest");
+    const gaugeActivity = new ldBar("#gaugeActivity")
+    
+    //Getting Session Number
+    const getSessionNumber = () =>{
+      const queryString = window.location.search;
+      const urlParams = new URLSearchParams(queryString);
+      const sessionNumber = urlParams.get('sessionNumber');
+      
+      return sessionNumber;
+    };
+    
+    //Animating Gauges
+    const animateGauges = (chartData) =>{
+      gaugeInterest.set(parseInt(chartData.interest));
+      gaugeActivity.set(parseInt(chartData.attitude));
+    };
+    
+    //Connecting to WebSocket
+    const connectToWebSocket = (sessionNumber) =>{
+      const webSocket = new WebSocket('wss://test.posemo.pl/' + sessionNumber + '/ws/graph/')
+      console.log('Connecting to:' +  webSocket.url);
+    
+      webSocket.onopen = () => {
+        webSocket.onmessage = function (e) {
+          const chartData = JSON.parse(e.data);
+          delete chartData.type;
+          animateGauges(chartData);
+        };
+      };
+    };
+    
+    const sessionNumber = getSessionNumber();
+    connectToWebSocket(sessionNumber);
+    
+    </script>
+  </body>
+</html>
