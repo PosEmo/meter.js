@@ -1,0 +1,51 @@
+/* General setting */
+.gauges{
+  padding: 20px 0px;
+}
+
+/* Centering the gauges in tooltip span */
+.centerGaugeTooltip{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Size of gauges */
+ .gaugeInterest{
+  width: 90% !important;
+  height: 90% !important;
+}
+.gaugeActivity{
+  width: 45% !important;
+  height: 45% !important;
+}
+
+/* Label */
+.ldBar-label {
+  color: black;
+  font-size: 2em;
+}
+.ldBar-label {
+  display: none;
+}
+
+/* Centering gauges inside circle */
+.centerGaugeinCircle{
+  position: absolute !important;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  text-shadow: 0 0 3px #fff;
+}
+
+/* Different shape of gauge */
+.gauges .ldbar path { 
+  mask: url(#mask);
+}
+
+/* SVG mask not display */
+.gaugeMask{
+  position: absolute !important;
+  top: -10000px;
+}
